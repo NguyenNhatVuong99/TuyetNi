@@ -1,302 +1,849 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML>
+<!DOCTYPE html>
+<html lang="en">
 
-<HEAD>
-	<TITLE> Tuyết Ni </TITLE>
-	<link rel="shortcut icon" href="logo.png" type="image/x-icon">
-	<META NAME="Generator" CONTENT="EditPlus">
-	<META NAME="Author" CONTENT="">
-	<META NAME="Keywords" CONTENT="">
-	<META NAME="Description" CONTENT="">
-	<style>
-		html,
-		body {
-			height: 100%;
-			padding: 0;
-			margin: 0;
-			background: #000;
-		}
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Con</title>
+    <link rel="shortcut icon" href="./images/logo99.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <style>
+        html,
+        body,
+        .container {
+            height: 100%;
+        }
 
-		canvas {
-			position: absolute;
-			width: 100%;
-			height: 100%;
-		}
+        body {
+            /* background-color: #0093E9; */
+/* background-image: linear-gradient(to right bottom, rgba(0, 147, 233 , .2),rgba( 128, 208, 199, .2)) */
+/* 
+            background-color: #0093E9;
+background-image: linear-gradient(160deg, rgba(#0093E9 ,.2),rgba( #80D0C7, .2)), */
 
-		.text-center {
-			color: #EF002E;
-			text-align: center;
-			font-size: 2.7rem;
-			font-family: "Brush Script MT";
-			position: relative;
+            /* background: linear-gradient(to right bottom,rgba( #8EC5FC, .2),rgba( #E0C3FC, .2) */
 
-		}
+            /* background: -webkit-linear-gradient(90deg, hsl(217, 100%, 50%) 0%, hsla(186, 100%, 69%, 1) 100%), */
+                /* background-image: linear-gradient(to right bottom,
+			rgba(, .8),
+			rgba($color-medium-blue, .8),
+			rgba($color-dark-blue, .8)), */
+            /* background-size: cover; */
+            background: #36D1DC;  /* fallback for old browsers */
+background: -webkit-linear-gradient(to right, #5B86E5, #36D1DC);  /* Chrome 10-25, Safari 5.1-6 */
+background: linear-gradient(to right, #5B86E5, #36D1DC); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 
-		#text-1 {
-			top: 38%;
-		}
+            /* background-position: 1vh; */
+            overflow: hidden;
+        }
 
-		#text-2 {
-			top: 32%;
-		}
+        .merrywrap {
+            position: absolute;
+            right: 40px;
+            left: 40px;
+            bottom: 40px;
+            top: 40px;
+        }
 
-		#text-3 {
-			top: 23%;
-		}
+        .giftbox {
+            position: absolute;
+            width: 300px;
+            height: 200px;
+            left: 50%;
+            margin-left: -150px;
+            bottom: 0;
+            z-index: 10;
+        }
 
-		.text-bottom {
-			color: #EF002E;
-			text-align: center;
-			font-size: 2rem;
-			font-family: "Brush Script MT";
-			position: relative;
-			top: 58%;
-		}
-	</style>
-</HEAD>
+        .giftbox>div {
+            background: #ee0979;  /* fallback for old browsers */
+background: -webkit-linear-gradient(to right, #ff6a00, #ee0979);  /* Chrome 10-25, Safari 5.1-6 */
+background: linear-gradient(to right, #ff6a00, #ee0979); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 
-<BODY>
-	<canvas id="pinkboard"></canvas>
-	<script>
-		/*
-	   * Settings
-	   */
-		var settings = {
-			particles: {
-				length: 500, // maximum amount of particles
-				duration: 2, // particle duration in sec
-				velocity: 100, // particle velocity in pixels/sec
-				effect: -0.75, // play with this for a nice effect
-				size: 30, // particle size in pixels
-			},
-		};
+            position: absolute;
+        }
 
-		/*
-		 * RequestAnimationFrame polyfill by Erik Möller
-		 */
-		(function () { var b = 0; var c = ["ms", "moz", "webkit", "o"]; for (var a = 0; a < c.length && !window.requestAnimationFrame; ++a) { window.requestAnimationFrame = window[c[a] + "RequestAnimationFrame"]; window.cancelAnimationFrame = window[c[a] + "CancelAnimationFrame"] || window[c[a] + "CancelRequestAnimationFrame"] } if (!window.requestAnimationFrame) { window.requestAnimationFrame = function (h, e) { var d = new Date().getTime(); var f = Math.max(0, 16 - (d - b)); var g = window.setTimeout(function () { h(d + f) }, f); b = d + f; return g } } if (!window.cancelAnimationFrame) { window.cancelAnimationFrame = function (d) { clearTimeout(d) } } }());
+        .giftbox>div:after,
+        .giftbox>div:before {
+            position: absolute;
+            content: "";
+            top: 0;
+        }
 
-		/*
-		 * Point class
-		 */
-		var Point = (function () {
-			function Point(x, y) {
-				this.x = (typeof x !== 'undefined') ? x : 0;
-				this.y = (typeof y !== 'undefined') ? y : 0;
-			}
-			Point.prototype.clone = function () {
-				return new Point(this.x, this.y);
-			};
-			Point.prototype.length = function (length) {
-				if (typeof length == 'undefined')
-					return Math.sqrt(this.x * this.x + this.y * this.y);
-				this.normalize();
-				this.x *= length;
-				this.y *= length;
-				return this;
-			};
-			Point.prototype.normalize = function () {
-				var length = this.length();
-				this.x /= length;
-				this.y /= length;
-				return this;
-			};
-			return Point;
-		})();
+        .giftbox:after {
+            position: absolute;
+            color: #fff;
+            width: 100%;
+            content: "Bấm dô đây";
+            left: 0;
+            bottom: 0;
+            font-size: 24px;
+            text-align: center;
+            transform: rotate(-20deg);
+            transform-origin: 0 0;
+        }
 
-		/*
-		 * Particle class
-		 */
-		var Particle = (function () {
-			function Particle() {
-				this.position = new Point();
-				this.velocity = new Point();
-				this.acceleration = new Point();
-				this.age = 0;
-			}
-			Particle.prototype.initialize = function (x, y, dx, dy) {
-				this.position.x = x;
-				this.position.y = y;
-				this.velocity.x = dx;
-				this.velocity.y = dy;
-				this.acceleration.x = dx * settings.particles.effect;
-				this.acceleration.y = dy * settings.particles.effect;
-				this.age = 0;
-			};
-			Particle.prototype.update = function (deltaTime) {
-				this.position.x += this.velocity.x * deltaTime;
-				this.position.y += this.velocity.y * deltaTime;
-				this.velocity.x += this.acceleration.x * deltaTime;
-				this.velocity.y += this.acceleration.y * deltaTime;
-				this.age += deltaTime;
-			};
-			Particle.prototype.draw = function (context, image) {
-				function ease(t) {
-					return (--t) * t * t + 1;
-				}
-				var size = image.width * ease(this.age / settings.particles.duration);
-				context.globalAlpha = 1 - this.age / settings.particles.duration;
-				context.drawImage(image, this.position.x - size / 2, this.position.y - size / 2, size, size);
-			};
-			return Particle;
-		})();
+        .giftbox .cover {
+            width: 100%;
+            top: 0;
+            left: 0;
+            height: 25%;
+            z-index: 2;
+        }
 
-		/*
-		 * ParticlePool class
-		 */
-		var ParticlePool = (function () {
-			var particles,
-				firstActive = 0,
-				firstFree = 0,
-				duration = settings.particles.duration;
+        .giftbox .cover:before {
+            position: absolute;
+            height: 100%;
+            left: 50%;
+            width: 50px;
+            transform: translateX(-50%);
+            /* background: #ec008c; */
+            background: #ec008c;  /* fallback for old browsers */
+background: -webkit-linear-gradient(to right, #fc6767, #ec008c);  /* Chrome 10-25, Safari 5.1-6 */
+background: linear-gradient(to right, #fc6767, #ec008c); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 
-			function ParticlePool(length) {
-				// create and populate particle pool
-				particles = new Array(length);
-				for (var i = 0; i < particles.length; i++)
-					particles[i] = new Particle();
-			}
-			ParticlePool.prototype.add = function (x, y, dx, dy) {
-				particles[firstFree].initialize(x, y, dx, dy);
+        }
 
-				// handle circular queue
-				firstFree++;
-				if (firstFree == particles.length) firstFree = 0;
-				if (firstActive == firstFree) firstActive++;
-				if (firstActive == particles.length) firstActive = 0;
-			};
-			ParticlePool.prototype.update = function (deltaTime) {
-				var i;
+        .giftbox .cover>div {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            left: 50%;
+            top: -50px;
+            transform: translateX(-50%);
+        }
 
-				// update active particles
-				if (firstActive < firstFree) {
-					for (i = firstActive; i < firstFree; i++)
-						particles[i].update(deltaTime);
-				}
-				if (firstFree < firstActive) {
-					for (i = firstActive; i < particles.length; i++)
-						particles[i].update(deltaTime);
-					for (i = 0; i < firstFree; i++)
-						particles[i].update(deltaTime);
-				}
+        .giftbox .cover>div:before,
+        .giftbox .cover>div:after {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            content: "";
+            box-shadow: inset 0 0 0 15px #ec008c;
+            border-radius: 30px;
+            transform-origin: 50% 100%;
+        }
 
-				// remove inactive particles
-				while (particles[firstActive].age >= duration && firstActive != firstFree) {
-					firstActive++;
-					if (firstActive == particles.length) firstActive = 0;
-				}
+        .giftbox .cover>div:before {
+            transform: translateX(-45%) skewY(40deg);
+        }
+
+        .giftbox .cover>div:after {
+            transform: translateX(45%) skewY(-40deg);
+        }
+
+        .giftbox .box {
+            right: 5%;
+            left: 5%;
+            height: 80%;
+            bottom: 0;
+        }
+
+        .giftbox .box:before {
+            width: 50px;
+            height: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            /* background: #ec008c; */
+            background: #ec008c;  /* fallback for old browsers */
+background: -webkit-linear-gradient(to right, #fc6767, #ec008c);  /* Chrome 10-25, Safari 5.1-6 */
+background: linear-gradient(to right, #fc6767, #ec008c); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+        }
+
+        .giftbox .box:after {
+            width: 100%;
+            height: 30px;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .icons {
+            position: absolute;
+            left: 0;
+            top: 50%;
+            width: 100%;
+            height: auto;
+            transform: translateY(-50%);
+        }
+
+        .icons .row {
+            z-index: 1000;
+            width: 100%;
+            /* text-align: center; */
+        }
+
+        .icons .row span {
+            color: #fff;
+            text-shadow: 5px 5px 0 #ca3121;
+            font-size: 84px;
+            display: inline-block;
+            opacity: 0;
+            transition: transform 0.5s ease-in, opacity 0.7s;
+        }
+
+        .step-1 .giftbox {
+            animation: wobble 0.5s linear infinite forwards;
+        }
+
+        .step-1 .cover {
+            animation: wobble 0.5s linear infinite 0.1s forwards;
+        }
+
+        .step-1 .icons .row span {
+            opacity: 1;
+        }
+
+        .step-2 .giftbox:after {
+            opacity: 0;
+        }
+
+        .step-3 .giftbox,
+        .step-4 .giftbox {
+            opacity: 0;
+            z-index: 1;
+        }
+
+        .step-3 .giftbox:after,
+        .step-4 .giftbox:after {
+            opacity: 0;
+        }
+
+        .step-2 .giftbox .cover {
+            animation: flyUp 0.4s ease-in forwards;
+        }
+
+        .step-2 .giftbox .box {
+            animation: flyDown 0.2s ease-in 0.05s forwards;
+        }
+
+        @keyframes wobble {
+            25% {
+                transform: rotate(4deg);
+            }
+
+            75% {
+                transform: rotate(-2deg);
+            }
+        }
+
+        @keyframes flyUp {
+            75% {
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(-1000px) rotate(20deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes flyDown {
+            75% {
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(100%);
+                opacity: 0;
+            }
+        }
+
+        .step-1 .icons .row span {
+            opacity: 0;
+        }
+
+        .step-1 .icons .row span:first-child {
+            transform: translateY(700%) translateX(600%);
+        }
+
+        .step-1 .icons .row span:nth-child(2) {
+            transform: translateY(700%) translateX(500%);
+        }
+
+        .step-1 .icons .row span:nth-child(3) {
+            transform: translateY(700%) translateX(400%);
+        }
+
+        .step-1 .icons .row span:nth-child(4) {
+            transform: translateY(700%) translateX(300%);
+        }
+
+        .step-1 .icons .row span:nth-child(5) {
+            transform: translateY(700%) translateX(200%);
+        }
+
+        .step-1 .icons .row span:nth-child(6) {
+            transform: translateY(700%) translateX(100%);
+        }
+
+        .step-1 .icons .row span:nth-child(7) {
+            transform: translateY(700%) translateX(0);
+        }
+
+        .step-1 .icons .row span:nth-child(8) {
+            transform: translateY(700%) translateX(-100%);
+        }
+
+        .step-1 .icons .row span:nth-child(9) {
+            transform: translateY(700%) translateX(-200%);
+        }
+
+        .step-1 .icons .row span:nth-child(10) {
+            transform: translateY(700%) translateX(-300%);
+        }
+
+        .step-1 .icons .row span:nth-child(11) {
+            transform: translateY(700%) translateX(-400%);
+        }
+
+        .step-1 .icons .row span:nth-child(12) {
+            transform: translateY(700%) translateX(-500%);
+        }
+
+        .step-1 .icons .row span:nth-child(13) {
+            transform: translateY(700%) translateX(-600%);
+        }
+
+        .step-2 .icons .row span:nth-child(2) {
+            -webkit-transition-delay: 0.1s;
+            transition-delay: 0.1s;
+        }
+
+        .step-2 .icons .row span:nth-child(3) {
+            -webkit-transition-delay: 0.15s;
+            transition-delay: 0.15s;
+        }
+
+        .step-2 .icons .row span:nth-child(4) {
+            -webkit-transition-delay: 0.2s;
+            transition-delay: 0.2s;
+        }
+
+        .step-2 .icons .row span:nth-child(5) {
+            -webkit-transition-delay: 0.25s;
+            transition-delay: 0.25s;
+        }
+
+        .step-2 .icons .row span:nth-child(6) {
+            -webkit-transition-delay: 0.3s;
+            transition-delay: 0.3s;
+        }
+
+        .step-2 .icons .row span:nth-child(7) {
+            -webkit-transition-delay: 0.35s;
+            transition-delay: 0.35s;
+        }
+
+        .step-2 .icons .row span:nth-child(8) {
+            -webkit-transition-delay: 0.4s;
+            transition-delay: 0.4s;
+        }
+
+        .step-2 .icons .row span:nth-child(9) {
+            -webkit-transition-delay: 0.45s;
+            transition-delay: 0.45s;
+        }
+
+        .step-2 .icons .row span:nth-child(10) {
+            -webkit-transition-delay: 0.5s;
+            transition-delay: 0.5s;
+        }
+
+        .step-2 .icons .row span:nth-child(11) {
+            -webkit-transition-delay: 0.55s;
+            transition-delay: 0.55s;
+        }
+
+        .step-2 .icons .row span:nth-child(12) {
+            -webkit-transition-delay: 0.6s;
+            transition-delay: 0.6s;
+        }
+
+        .step-2 .icons .row span:nth-child(13) {
+            -webkit-transition-delay: 0.65s;
+            transition-delay: 0.65s;
+        }
+
+        .step-2 .icons span,
+        .step-3 .icons span,
+        .step-4 .icons span {
+            opacity: 0.7;
+            transition-timing-function: cubic-bezier(0, 0, 0.2, 0.91);
+        }
+
+        .step-4 .icons .row span,
+        .step-3 .icons .row span {
+            animation: wobble 0.6s linear infinite forwards;
+        }
+
+        .step-4 .icons .row span:nth-child(even),
+        .step-3 .icons .row span:nth-child(even) {
+            animation-duration: 0.7s;
+        }
+    </style>
+    <style>
+        svg {
+            width: 0;
+            height: 0;
+            display: block;
+        }
+
+        #row-grid {
+            z-index: 1 !important;
+            margin-bottom: -4rem;
+        }
+
+        .grid {
+            width: 80vmin;
+            margin: 10vmin auto;
+            display: flex;
+            flex-wrap: wrap;
+            transform-style: preserve-3d;
+            box-shadow: 0px 0px 8vmin 4vmin rgba(0, 0, 0, 0.1), inset 0px 0px 8vmin 4vmin rgba(0, 0, 0, 0.1);
+            perspective: 2000;
+            z-index: 1;
+        }
+
+        .item-box {
+            position: relative;
+            width: 26.66667vmin;
+            height: 26.66667vmin;
+            transform-style: preserve-3d;
+            cursor: pointer;
+            transition: all 0.225s cubic-bezier(0.65, 0.05, 0.36, 1) 0.225s;
+        }
+
+        .item-box:nth-child(1) .puzzle:before {
+            background-image: url("./images/1.jpg");
+        }
+
+        .item-box:nth-child(2) .puzzle:before {
+            background-image: url("./images/2.jpg");
+        }
+
+        .item-box:nth-child(3) .puzzle:before {
+            background-image: url("./images/5.jpg");
+        }
+
+        .item-box:nth-child(4) .puzzle:before {
+            background-image: url("./images/4.jpg");
+        }
+
+        .item-box:nth-child(5) .puzzle:before {
+            background-image: url("./images/3.jpg");
+        }
+
+        .item-box:nth-child(6) .puzzle:before {
+            background-image: url("./images/6.jpg");
+        }
+
+        .item-box:nth-child(7) .puzzle:before {
+            background-image: url("./images/7.jpg");
+        }
+
+        .item-box:nth-child(8) .puzzle:before {
+            background-image: url("./images/8.jpg");
+        }
+
+        .item-box:nth-child(9) .puzzle:before {
+            background-image: url("./images/9.jpg");
+        }
+
+        .item-box:hover {
+            transform: scale(1.25, 1.25);
+            box-shadow: 0px 0px 16px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .item-box:hover .puzzle {
+            transform: translateX(0) translateY(0) translateZ(1px) rotateX(0) rotateY(0);
+            opacity: 1;
+        }
+
+        .item-box .item-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform-style: preserve-3d;
+        }
+
+        .piece {
+            position: absolute;
+            width: 13.33333vmin;
+            height: 13.33333vmin;
+            transform-style: preserve-3d;
+        }
+
+        .piece:nth-child(1) {
+            transform: translateX(-100%) translateY(-100%) rotate(0deg);
+        }
+
+        .piece:nth-child(1) .puzzle:before {
+            background-position: 0% 0%;
+            transform: rotate(0deg);
+        }
+
+        .piece:nth-child(2) {
+            transform: translateX(0%) translateY(-100%) rotate(90deg);
+        }
+
+        .piece:nth-child(2) .puzzle:before {
+            background-position: 100% 0%;
+            transform: rotate(-90deg);
+        }
+
+        .piece:nth-child(3) {
+            transform: translateX(0%) translateY(0%) rotate(180deg);
+        }
+
+        .piece:nth-child(3) .puzzle:before {
+            background-position: 100% 100%;
+            transform: rotate(-180deg);
+        }
+
+        .piece:nth-child(4) {
+            transform: translateX(-100%) translateY(0%) rotate(270deg);
+        }
+
+        .piece:nth-child(4) .puzzle:before {
+            background-position: 0% 100%;
+            transform: rotate(-270deg);
+        }
+
+        .puzzle {
+            position: absolute;
+            width: 17.17505vmin;
+            height: 17.17505vmin;
+            background-color: #000;
+            -webkit-clip-path: url(#puzzle);
+            clip-path: url(#puzzle);
+            opacity: .8;
+            transform: translateX(-22.368%) translateY(-22.368%) translateZ(0px) rotateX(0.5turn) rotateY(0.5turn);
+            transition: all 0.45s cubic-bezier(0.65, 0.05, 0.36, 1);
+        }
+
+        .puzzle:before {
+            content: "";
+            position: absolute;
+            width: 17.17505vmin;
+            height: 17.17505vmin;
+            background-size: 155.264%;
+        }
+
+        @-webkit-keyframes init {
+            from {
+                transform: translateX(0) translateY(0) translateZ(1px) rotateX(0) rotateY(0);
+            }
+        }
+
+        @keyframes init {
+            from {
+                transform: translateX(0) translateY(0) translateZ(1px) rotateX(0) rotateY(0);
+            }
+        }
+
+        .d-none {
+            display: none;
+            z-index: 1000;
+        }
+
+        #row-text {
+            display: flex;
+            text-align: center;
+        }
 
 
-			};
-			ParticlePool.prototype.draw = function (context, image) {
-				// draw active particles
-				if (firstActive < firstFree) {
-					for (i = firstActive; i < firstFree; i++)
-						particles[i].draw(context, image);
-				}
-				if (firstFree < firstActive) {
-					for (i = firstActive; i < particles.length; i++)
-						particles[i].draw(context, image);
-					for (i = 0; i < firstFree; i++)
-						particles[i].draw(context, image);
-				}
-			};
-			return ParticlePool;
-		})();
+        .center {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            margin: auto;
+        }
 
-		/*
-		 * Putting it all together
-		 */
-		(function (canvas) {
-			var context = canvas.getContext('2d'),
-				particles = new ParticlePool(settings.particles.length),
-				particleRate = settings.particles.length / settings.particles.duration, // particles/sec
-				time;
+        .table {
+            top: -88vh;
+            width: 50vw;
+            height: 10vh;
+            background-color: #fff;
+        }
 
-			// get point on heart with -PI <= t <= PI
-			function pointOnHeart(t) {
-				return new Point(
-					160 * Math.pow(Math.sin(t), 3),
-					130 * Math.cos(t) - 50 * Math.cos(2 * t) - 20 * Math.cos(3 * t) - 10 * Math.cos(4 * t) + 25
-				);
-			}
+        .table .monitor-wrapper {
+            background: #ee0979;  /* fallback for old browsers */
+background: -webkit-linear-gradient(to left, #ff6a00, #ee0979);  /* Chrome 10-25, Safari 5.1-6 */
+background: linear-gradient(to left, #ff6a00, #ee0979); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 
-			// creating the particle image using a dummy canvas
-			var image = (function () {
-				var canvas = document.createElement('canvas'),
-					context = canvas.getContext('2d');
-				canvas.width = settings.particles.size;
-				canvas.height = settings.particles.size;
-				// helper function to create the path
-				function to(t) {
-					var point = pointOnHeart(t);
-					point.x = settings.particles.size / 2 + point.x * settings.particles.size / 350;
-					point.y = settings.particles.size / 2 - point.y * settings.particles.size / 350;
-					return point;
-				}
-				// create the path
-				context.beginPath();
-				var t = -Math.PI;
-				var point = to(t);
-				context.moveTo(point.x, point.y);
-				while (t < Math.PI) {
-					t += 0.01; // baby steps!
-					point = to(t);
-					context.lineTo(point.x, point.y);
-				}
-				context.closePath();
-				// create the fill
-				context.fillStyle = '#ea80b0';
-				context.fill();
-				// create the image
-				var image = new Image();
-				image.src = canvas.toDataURL();
-				return image;
-			})();
+            /* background: #050321; */
+            width: 48vw;
+            height: 8vh;
+            box-shadow: 0px 2px 2px 2px rgba(0, 0, 0, 0.3);
+        }
 
-			// render that thing!
-			function render() {
-				// next animation frame
-				requestAnimationFrame(render);
+        .table .monitor-wrapper .monitor {
+            width: 46vw;
+            height: 5vh;
+            background: #ee0979;  /* fallback for old browsers */
+background: -webkit-linear-gradient(to right, #ff6a00, #ee0979);  /* Chrome 10-25, Safari 5.1-6 */
+background: linear-gradient(to right, #ff6a00, #ee0979); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 
-				// update time
-				var newTime = new Date().getTime() / 1000,
-					deltaTime = newTime - (time || newTime);
-				time = newTime;
+            /* background-color: #344151; */
+            overflow: hidden;
+            white-space: nowrap;
+            box-shadow: inset 0px 5px 10px 2px rgba(0, 0, 0, 0.3);
+        }
 
-				// clear canvas
-				context.clearRect(0, 0, canvas.width, canvas.height);
+        .table .monitor-wrapper .monitor p {
+            font-family: "VT323", monospace;
+            font-size: 21px;
+            position: relative;
+            display: inline-block;
+            animation: move 8s infinite linear;
+            color: #fff;
+        }
 
-				// create new particles
-				var amount = particleRate * deltaTime;
-				for (var i = 0; i < amount; i++) {
-					var pos = pointOnHeart(Math.PI - 2 * Math.PI * Math.random());
-					var dir = pos.clone().length(settings.particles.velocity);
-					particles.add(canvas.width / 2 + pos.x, canvas.height / 2 - pos.y, dir.x, -dir.y);
-				}
+        @keyframes move {
+            from {
+                left: 800px;
+            }
 
-				// update and draw particles
-				particles.update(deltaTime);
-				particles.draw(context, image);
-			}
+            to {
+                left: -600px;
+            }
+        }
+    </style>
+    <script>
+        window.onload = function () {
+            var merrywrap = document.getElementById("merrywrap");
+            var box = merrywrap.getElementsByClassName("giftbox")[0];
+            var step = 1;
+            var stepMinutes = [2000, 2000, 1000, 1000];
+            function init() {
+                box.addEventListener("click", openBox, false);
+            }
+            function stepClass(step) {
+                merrywrap.className = 'merrywrap';
+                merrywrap.className = 'merrywrap step-' + step;
 
-			// handle (re-)sizing of the canvas
-			function onResize() {
-				canvas.width = canvas.clientWidth;
-				canvas.height = canvas.clientHeight;
-			}
-			window.onresize = onResize;
-			setTimeout(() => {
-				onResize()
-				render()
-			})
+            }
+            function openBox() {
 
-		})(document.getElementById("pinkboard"))
-	</script>
-	<h1 class="text-center" id="text-1"> Tuyet Ni </h1>
-	<h1 class="text-center" id="text-2"> &hearts; </h1>
-	<h1 class="text-bottom">with &hearts; from Nhat Vuong</h1>
+                if (step === 1) {
+                    box.removeEventListener("click", openBox, false);
+                }
+                stepClass(step);
+                if (step === 3) {
+                    return;
+                }
+                if (step === 4) {
+                    return;
+                }
+                setTimeout(openBox, stepMinutes[step - 1]);
+                setTimeout(showPuz, stepMinutes[step - 1]);
 
-</BODY>
+                step++;
 
-</HTML>
+            }
+            function showPuz() {
+                document.getElementById("row-grid").classList.remove("d-none")
+                document.getElementById("row-text").classList.remove("d-none")
+                document.getElementById("giftbox").remove();
+                var audio = document.getElementById("audio");
+                audio.play();
+            }
+            init();
+
+        }
+    </script>
+</head>
+
+<body>
+    <audio id="audio" src="./music.mp3"></audio>
+
+    <div id="merrywrap" class="merrywrap">
+        <canvas id="snowfall"></canvas>
+        <div class="giftbox" id="giftbox">
+            <div class="cover">
+                <div></div>
+            </div>
+            <div class="box" id="box"></div>
+        </div>
+        <div class="icons">
+          
+            <div class="row d-none" id="row-text">
+                <div class="table center">
+                    <div class="monitor-wrapper center">
+                        <div class="monitor center">
+                            <p>Happy Birthday Con &hearts; Chúc con mau ăn chóng lớn . From Chú đẹp giai</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row d-none" id="row-grid">
+
+
+                <svg viewBox="0 0 1 1">
+                    <defs>
+                        <clipPath id="puzzle" clipPathUnits="objectBoundingBox">
+                            <path
+                                d="M0 0.7763157894736841H0.23684210526315788C0.3289473684210526 0.7763157894736841 0.35526315789473684 0.7236842105263157 0.2894736842105263 0.6578947368421053 0.22368421052631576 0.5921052631578947 0.3157894736842105 0.5526315789473684 0.39473684210526316 0.5526315789473684 0.47368421052631576 0.5526315789473684 0.5657894736842105 0.5921052631578947 0.5 0.6578947368421053 0.43421052631578944 0.7236842105263157 0.4605263157894737 0.7763157894736841 0.5526315789473684 0.7763157894736841H0.7763157894736842V0.5526315789473684C0.7763157894736842 0.4605263157894737 0.8289473684210525 0.4342105263157894 0.894736842105263 0.5 0.9605263157894737 0.5657894736842106 1 0.4736842105263157 1 0.39473684210526305 1 0.3157894736842106 0.9605263157894737 0.2236842105263157 0.894736842105263 0.2894736842105263 0.8289473684210525 0.3552631578947367 0.7763157894736842 0.32894736842105265 0.7763157894736842 0.23684210526315796V0H0V0.7763157894736841Z">
+                            </path>
+                        </clipPath>
+                    </defs>
+                </svg>
+                <div class="grid ">
+                    <div class="item-box">
+                        <div class="item-container">
+                            <div class="piece">
+                                <div class="puzzle"></div>
+                            </div>
+                            <div class="piece">
+                                <div class="puzzle"></div>
+                            </div>
+                            <div class="piece">
+                                <div class="puzzle"></div>
+                            </div>
+                            <div class="piece">
+                                <div class="puzzle"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="item-box">
+                        <div class="item-container">
+                            <div class="piece">
+                                <div class="puzzle"></div>
+                            </div>
+                            <div class="piece">
+                                <div class="puzzle"></div>
+                            </div>
+                            <div class="piece">
+                                <div class="puzzle"></div>
+                            </div>
+                            <div class="piece">
+                                <div class="puzzle"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="item-box">
+                        <div class="item-container">
+                            <div class="piece">
+                                <div class="puzzle"></div>
+                            </div>
+                            <div class="piece">
+                                <div class="puzzle"></div>
+                            </div>
+                            <div class="piece">
+                                <div class="puzzle"></div>
+                            </div>
+                            <div class="piece">
+                                <div class="puzzle"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="item-box">
+                        <div class="item-container">
+                            <div class="piece">
+                                <div class="puzzle"></div>
+                            </div>
+                            <div class="piece">
+                                <div class="puzzle"></div>
+                            </div>
+                            <div class="piece">
+                                <div class="puzzle"></div>
+                            </div>
+                            <div class="piece">
+                                <div class="puzzle"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="item-box">
+                        <div class="item-container">
+                            <div class="piece">
+                                <div class="puzzle"></div>
+                            </div>
+                            <div class="piece">
+                                <div class="puzzle"></div>
+                            </div>
+                            <div class="piece">
+                                <div class="puzzle"></div>
+                            </div>
+                            <div class="piece">
+                                <div class="puzzle"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="item-box">
+                        <div class="item-container">
+                            <div class="piece">
+                                <div class="puzzle"></div>
+                            </div>
+                            <div class="piece">
+                                <div class="puzzle"></div>
+                            </div>
+                            <div class="piece">
+                                <div class="puzzle"></div>
+                            </div>
+                            <div class="piece">
+                                <div class="puzzle"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="item-box">
+                        <div class="item-container">
+                            <div class="piece">
+                                <div class="puzzle"></div>
+                            </div>
+                            <div class="piece">
+                                <div class="puzzle"></div>
+                            </div>
+                            <div class="piece">
+                                <div class="puzzle"></div>
+                            </div>
+                            <div class="piece">
+                                <div class="puzzle"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="item-box">
+                        <div class="item-container">
+                            <div class="piece">
+                                <div class="puzzle"></div>
+                            </div>
+                            <div class="piece">
+                                <div class="puzzle"></div>
+                            </div>
+                            <div class="piece">
+                                <div class="puzzle"></div>
+                            </div>
+                            <div class="piece">
+                                <div class="puzzle"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="item-box">
+                        <div class="item-container">
+                            <div class="piece">
+                                <div class="puzzle"></div>
+                            </div>
+                            <div class="piece">
+                                <div class="puzzle"></div>
+                            </div>
+                            <div class="piece">
+                                <div class="puzzle"></div>
+                            </div>
+                            <div class="piece">
+                                <div class="puzzle"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</body>
+
+</html>
